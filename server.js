@@ -11,12 +11,12 @@ function start() {
         .prompt([
             {
                 type: "list",
-                message: "Select which action you would like to do:",
-                choices: ["View Employees", "Add Employee", "Delete Employee", "Update Employee", 
-                "View Roles", "Add Role", "Delete Role", "Update Role", 
-                "View Departments", "Add Department", "Delete Department", "Update Department", 
-                "Update Employee Roles", "Update Employee Manager",
-                "View Employees by Department", "View Employees By Manager"],
+                message: "Select an action:",
+                choices: ["View Employees", "Add Employee", "Delete Employee", "Update Employee",
+                    "View Roles", "Add Role", "Delete Role", "Update Role",
+                    "View Departments", "Add Department", "Delete Department", "Update Department",
+                    "Update Employee Roles", "Update Employee Manager",
+                    "View Employees by Department", "View Employees By Manager"],
                 name: "start"
             }
 
@@ -94,7 +94,10 @@ function viewRoles() {
 }
 
 function viewDepartments() {
-
+    db.promise().query("SELECT * FROM department").then(([data]) => {
+        console.table(data);
+        start();
+    })
 }
 
 
@@ -106,18 +109,18 @@ function addEmployee() {
             {
                 type: "input",
                 name: "first_name",
-                message: "What would you like to do?"
+                message: "Employee first name:"
             },
             {
                 type: "input",
                 name: "last_name",
-                message: "What would you like to do?"
+                message: "Employee last name:"
             }
         ]).then(response => {
             let first = response.first_name;
             let last = response.last_name;
-            db.promise().query("SELECT * FROM role").then(([data])=> {
-                const allRoles = data.map(({id, title}) => ({
+            db.promise().query("SELECT * FROM role").then(([data]) => {
+                const allRoles = data.map(({ id, title }) => ({
                     name: title,
                     value: id
                 }))
@@ -126,27 +129,70 @@ function addEmployee() {
                         {
                             type: "list",
                             name: "roleID",
-                            message: "What is the role?",
+                            message: "What is the employee's role?",
                             choices: allRoles
                         }
                     ]).then(res => {
                         let roleID = res.roleID;
                         db.promise().query("INSERT INTO employee(first_name, last_name, role_id) values(?,?,?)", [first, last, roleID])
+                    }).then(res => {
+                        inquirer
+                            .prompt([
+                                {
+                                    type: "input",
+                                    name: "managerID",
+                                    message: "Enter Manager ID (leave blank for none):"
+                                }
+                            ]).then(res => {
+                                let managerID = res.managerID;
+                                db.promise().query("INSERT INTO employee(first_name, last_name, role_id, manager_id) values(?,?,?,?)", [first, last, roleID, managerID])
+                            })
                     })
             })
-        }) 
-        
-   
-
+        })
 }
 
 function addRole() {
+    inquirer
+        .prompt([
+            {
+                type: "input",
+                name:"new_role_name",
+                message: "Name of new role:",
+            },
+            {
+                type: "input",
+                name: "new_role_salary",
+                message: "Salary of the new role:"
+            },
+            {
+                type: "input",
+                name: "new_role_dept_id",
+                message: "Department ID Number:"
+            }
 
+        ]).then(res => {
+            let newRole = res.new_role;
+            let newRoleSalary = res.new_role_salary;
+            let newRoleDeptID = res.new_role_dept_id;
+            db.promise().query("INSERT INTO role(new_role_name, new_role_salary, new_role_dept_id) values(?,?,?)", [newRole, newRoleSalary, newRoleDeptID])
+        })
 }
 
 function addDepartment() {
-
-}
+    inquirer
+    .prompt([
+        {
+            type: "input",
+            name:"new_dept_name",
+            message: "Name of new role:",
+        }
+    ]).then(res => {
+        let newDept = res.new_dept_name;
+        db.promise().query("INSERT INTO department(new_dept_name values (?) ", [newDept]).then(([data]) => {
+            console.table(data);
+    })
+})
 
 // delete
 function deleteEmployee() {
@@ -175,21 +221,27 @@ function updateEmployeeManager() {
 // view by
 
 function viewEmpByDept() {
-
+    db.promise().query("SELECT * FROM department").then(([data]) => {
+        const allDepts = data.map(({ id, name }) => ({
+            name: name,
+            value: id
+        }))
+        inquirer
+            .prompt([
+                {
+                    type: "list",
+                    name: "viewDepts",
+                    message: "Which department's employees would you like to view?",
+                    choices: allDepts
+                }
+            ]).then(([data]) => {
+                console.table(data);
+            })
+    })
 }
 
 function viewEmpByManager() {
 
 }
-
-
-// Update an employee role
-// const updateEmployee = async () => {
-
-//     app.put("/api/update_employee/:id", (req, res)=> {
-//         const update_Employee = req.body.
-//     })
-
-// }
 
 
