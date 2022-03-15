@@ -119,6 +119,9 @@ function addEmployee() {
         ]).then(response => {
             let first = response.first_name;
             let last = response.last_name;
+            let roleID;
+            let managerID;
+            // Selects all roles so they can be displayed as choices in the employee role category
             db.promise().query("SELECT * FROM role").then(([data]) => {
                 const allRoles = data.map(({ id, title }) => ({
                     name: title,
@@ -131,22 +134,19 @@ function addEmployee() {
                             name: "roleID",
                             message: "What is the employee's role?",
                             choices: allRoles
+                        },
+                        {
+                            type: "input",
+                            name: "managerID",
+                            message: "Enter Manager ID (leave blank for none):"
                         }
                     ]).then(res => {
-                        let roleID = res.roleID;
-                        db.promise().query("INSERT INTO employee(first_name, last_name, role_id) values(?,?,?)", [first, last, roleID])
-                    }).then(res => {
-                        inquirer
-                            .prompt([
-                                {
-                                    type: "input",
-                                    name: "managerID",
-                                    message: "Enter Manager ID (leave blank for none):"
-                                }
-                            ]).then(res => {
-                                let managerID = res.managerID;
-                                db.promise().query("INSERT INTO employee(first_name, last_name, role_id, manager_id) values(?,?,?,?)", [first, last, roleID, managerID])
-                            })
+                        roleID = res.roleID;
+                        managerID = res.managerID;
+                        db.promise().query("INSERT INTO employee(first_name, last_name, role_id, manager_id) values(?,?,?,?)", [first, last, roleID, managerID]).then(([data]) => {
+                            console.table(data);
+                            start();
+                        })
                     })
             })
         })
@@ -157,43 +157,43 @@ function addRole() {
         .prompt([
             {
                 type: "input",
-                name:"new_role_name",
+                name: "title",
                 message: "Name of new role:",
             },
             {
                 type: "input",
-                name: "new_role_salary",
+                name: "salary",
                 message: "Salary of the new role:"
             },
             {
                 type: "input",
-                name: "new_role_dept_id",
+                name: "department_id",
                 message: "Department ID Number:"
             }
 
         ]).then(res => {
-            let newRole = res.new_role;
-            let newRoleSalary = res.new_role_salary;
-            let newRoleDeptID = res.new_role_dept_id;
-            db.promise().query("INSERT INTO role(new_role_name, new_role_salary, new_role_dept_id) values(?,?,?)", [newRole, newRoleSalary, newRoleDeptID])
+            let newRole = res.title;
+            let newRoleSalary = res.salary;
+            let newRoleDeptID = res.department_id;
+            db.promise().query("INSERT INTO role(title, salary, department_id) values(?,?,?)", [newRole, newRoleSalary, newRoleDeptID])
         })
 }
 
 function addDepartment() {
     inquirer
-    .prompt([
-        {
-            type: "input",
-            name:"new_dept_name",
-            message: "Name of new role:",
-        }
-    ]).then(res => {
-        let newDept = res.new_dept_name;
-        db.promise().query("INSERT INTO department(new_dept_name values (?) ", [newDept]).then(([data]) => {
-            console.table(data);
-    })
-})
-
+        .prompt([
+            {
+                type: "input",
+                name: "new_dept_name",
+                message: "Name of new role:",
+            }
+        ]).then(res => {
+            let newDept = res.new_dept_name;
+            db.promise().query("INSERT INTO department(new_dept_name values (?) ", [newDept]).then(([data]) => {
+                console.table(data);
+            })
+        })
+}
 // delete
 function deleteEmployee() {
 
