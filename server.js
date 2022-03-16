@@ -12,10 +12,13 @@ function start() {
             {
                 type: "list",
                 message: "Select an action:",
-                choices: ["View Employees", "Add Employee", "Delete Employee", "Update Employee",
-                    "View Roles", "Add Role", "Delete Role", "Update Role",
-                    "View Departments", "Add Department", "Delete Department", "Update Department",
-                    "Update Employee Roles", "Update Employee Manager",
+                choices: ["View Employees", "View Roles", "View Departments", "Add Employee", "Add Role", "Add Department",
+                    "Update Employee Roles",
+
+                    "Delete Employee", "Update Employee",
+                    "Delete Role", "Update Role",
+                    "Delete Department", "Update Department",
+                    "Update Employee Manager",
                     "View Employees by Department", "View Employees By Manager"],
                 name: "start"
             }
@@ -158,90 +161,106 @@ function addRole() {
             {
                 type: "input",
                 name: "title",
-                message: "Name of new role:",
+                message: "Name of new role:"
             },
             {
                 type: "input",
                 name: "salary",
                 message: "Salary of the new role:"
-            },
-            {
-                type: "input",
-                name: "department_id",
-                message: "Department ID Number:"
-            }
-
-        ]).then(res => {
-            let newRole = res.title;
-            let newRoleSalary = res.salary;
-            let newRoleDeptID = res.department_id;
-            db.promise().query("INSERT INTO role(title, salary, department_id) values(?,?,?)", [newRole, newRoleSalary, newRoleDeptID])
-        })
-}
-
-function addDepartment() {
-    inquirer
-        .prompt([
-            {
-                type: "input",
-                name: "new_dept_name",
-                message: "Name of new role:",
             }
         ]).then(res => {
-            let newDept = res.new_dept_name;
-            db.promise().query("INSERT INTO department(new_dept_name values (?) ", [newDept]).then(([data]) => {
-                console.table(data);
+            let title = res.title;
+            let salary = res.salary;
+            let departmentID;
+            db.promise().query("SELECT * FROM department").then(([data]) => {
+                const allDepartments = data.map(({ id, name }) => ({
+                    name: name,
+                    value: id
+                }))
+                inquirer
+                    .prompt([
+                        {
+                            type: "list",
+                            name: "departmentID",
+                            message: "Department of new role:",
+                            choices: allDepartments
+                        }
+                    )].then(res => {
+                            departmentID = res.departmentID;
+                            db.promise().query("INSERT INTO role(title, salary, department_id) values(?,?,?)", [title, salary, departmentID]).then(([data]) => {
+                                console.table(data);
+                                start();
+                            })
+                        })
             })
         })
-}
+    }
+
+function addDepartment() {
+                inquirer
+                    .prompt([
+                        {
+                            type: "input",
+                            name: "name",
+                            message: "Name of new department:",
+                        }
+                    ]).then(res => {
+                        let newDept = res.name;
+                        db.promise().query("INSERT INTO department(name) values(?)", [newDept]).then(([data]) => {
+                            console.table(data);
+                            start();
+                        })
+                    })
+            }
 // delete
-function deleteEmployee() {
+// function deleteEmployee() {
 
-}
-function deleteRole() {
+// }
+// function deleteRole() {
 
-}
-function deleteDepartment() {
+// }
+// function deleteDepartment() {
 
-}
+// }
 
 // update
-function updateEmployee() {
+// function updateEmployee() {
 
-}
+// }
 
 function updateEmployeeRoles() {
 
-}
 
-function updateEmployeeManager() {
+            }
 
-}
+// function updateEmployeeManager() {
+
+// }
 
 // view by
 
 function viewEmpByDept() {
-    db.promise().query("SELECT * FROM department").then(([data]) => {
-        const allDepts = data.map(({ id, name }) => ({
-            name: name,
-            value: id
-        }))
-        inquirer
-            .prompt([
-                {
-                    type: "list",
-                    name: "viewDepts",
-                    message: "Which department's employees would you like to view?",
-                    choices: allDepts
-                }
-            ]).then(([data]) => {
-                console.table(data);
-            })
-    })
-}
+                db.promise().query("SELECT * FROM department").then(([data]) => {
+                    const allDepts = data.map(({ id, name }) => ({
+                        name: name,
+                        value: id
+                    }))
+                    inquirer
+                        .prompt([
+                            {
+                                type: "list",
+                                name: "viewDepts",
+                                message: "Which department's employees would you like to view?",
+                                choices: allDepts
+                            }
+                        ]).then(([data]) => {
+                            console.table(data);
+                        })
+                })
+            }
 
 function viewEmpByManager() {
 
-}
+            }
 
 
