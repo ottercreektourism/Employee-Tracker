@@ -39,8 +39,17 @@ Pull requests are welcome. For any major changes, please open an issue first to 
 
 ## Tests
 
+To source sql, type in terminal:
+> mysql -u root
 
-To run, type:
+> SOURCE schema.sql;
+
+> SOURCE seeds.sql;
+
+To exit mysql terminal and go back to bash, type:
+> quit
+
+To run, type into bash terminal:
 > node server.js
 
 ## Questions
