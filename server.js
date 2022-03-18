@@ -147,7 +147,7 @@ function addEmployee() {
                         roleID = res.roleID;
                         managerID = res.managerID;
                         db.promise().query("INSERT INTO employee(first_name, last_name, role_id, manager_id) values(?,?,?,?)", [first, last, roleID, managerID]).then(([data]) => {
-                            console.table(data);
+                            viewEmployees();
                             start();
                         })
                     })
@@ -185,10 +185,10 @@ function addRole() {
                             message: "Department of new role:",
                             choices: allDepartments
                         }
-                    )].then(res => {
+                    ]).then(res => {
                             departmentID = res.departmentID;
                             db.promise().query("INSERT INTO role(title, salary, department_id) values(?,?,?)", [title, salary, departmentID]).then(([data]) => {
-                                console.table(data);
+                                viewRoles();
                                 start();
                             })
                         })
@@ -207,7 +207,7 @@ function addDepartment() {
                     ]).then(res => {
                         let newDept = res.name;
                         db.promise().query("INSERT INTO department(name) values(?)", [newDept]).then(([data]) => {
-                            console.table(data);
+                            viewDepartments();
                             start();
                         })
                     })
