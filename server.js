@@ -81,8 +81,9 @@ function start() {
 start();
 
 // View
+//  LEFT JOIN employee ON manager_id = id
 function viewEmployees() {
-    db.promise().query("SELECT * FROM employee").then(([data]) => {
+    db.promise().query("SELECT first_name, last_name, title, salary, name AS department FROM employee LEFT JOIN role ON employee.role_id = role.id LEFT JOIN department ON role.department_id = department.id").then(([data]) => {
         console.table(data);
         start();
     })
