@@ -187,32 +187,32 @@ function addRole() {
                             choices: allDepartments
                         }
                     ]).then(res => {
-                            departmentID = res.departmentID;
-                            db.promise().query("INSERT INTO role(title, salary, department_id) values(?,?,?)", [title, salary, departmentID]).then(([data]) => {
-                                viewRoles();
-                                start();
-                            })
-                        })
-            })
-        })
-    }
-
-function addDepartment() {
-                inquirer
-                    .prompt([
-                        {
-                            type: "input",
-                            name: "name",
-                            message: "Name of new department:",
-                        }
-                    ]).then(res => {
-                        let newDept = res.name;
-                        db.promise().query("INSERT INTO department(name) values(?)", [newDept]).then(([data]) => {
-                            viewDepartments();
+                        departmentID = res.departmentID;
+                        db.promise().query("INSERT INTO role(title, salary, department_id) values(?,?,?)", [title, salary, departmentID]).then(([data]) => {
+                            viewRoles();
                             start();
                         })
                     })
+            })
+        })
+}
+
+function addDepartment() {
+    inquirer
+        .prompt([
+            {
+                type: "input",
+                name: "name",
+                message: "Name of new department:",
             }
+        ]).then(res => {
+            let newDept = res.name;
+            db.promise().query("INSERT INTO department(name) values(?)", [newDept]).then(([data]) => {
+                viewDepartments();
+                start();
+            })
+        })
+}
 // delete
 // function deleteEmployee() {
 
@@ -230,9 +230,26 @@ function addDepartment() {
 // }
 
 function updateEmployeeRoles() {
-
-
-            }
+    db.promise().query("SELECT * FROM employee").then(([data]) => {
+        const allEmployees = data.map(({ id, first_name }) => ({
+            name: first_name,
+            value: id
+        }))
+        inquirer
+            .prompt([
+                {
+                    type: "list",
+                    name: "first_name",
+                    message: "Select an employee to update their role:",
+                    choices: allEmployees
+                }
+            ]).then(res => {
+                first = res.first_name;
+                
+                db.promise().query("UPDATE employee SET role_id = ")
+            })
+    })
+}
 
 // function updateEmployeeManager() {
 
@@ -241,27 +258,27 @@ function updateEmployeeRoles() {
 // view by
 
 function viewEmpByDept() {
-                db.promise().query("SELECT * FROM department").then(([data]) => {
-                    const allDepts = data.map(({ id, name }) => ({
-                        name: name,
-                        value: id
-                    }))
-                    inquirer
-                        .prompt([
-                            {
-                                type: "list",
-                                name: "viewDepts",
-                                message: "Which department's employees would you like to view?",
-                                choices: allDepts
-                            }
-                        ]).then(([data]) => {
-                            console.table(data);
-                        })
-                })
-            }
+    db.promise().query("SELECT * FROM department").then(([data]) => {
+        const allDepts = data.map(({ id, name }) => ({
+            name: name,
+            value: id
+        }))
+        inquirer
+            .prompt([
+                {
+                    type: "list",
+                    name: "viewDepts",
+                    message: "Which department's employees would you like to view?",
+                    choices: allDepts
+                }
+            ]).then(([data]) => {
+                console.table(data);
+            })
+    })
+}
 
 function viewEmpByManager() {
 
-            }
+}
 
 
