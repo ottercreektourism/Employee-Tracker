@@ -13,13 +13,7 @@ function start() {
                 type: "list",
                 message: "Select an action:",
                 choices: ["View Employees", "View Roles", "View Departments", "Add Employee", "Add Role", "Add Department",
-                    "Update Employee Roles",
-
-                    "Delete Employee", "Update Employee",
-                    "Delete Role", "Update Role",
-                    "Delete Department", "Update Department",
-                    "Update Employee Manager",
-                    "View Employees by Department", "View Employees By Manager"],
+                    "Update Employee Roles"],
                 name: "start"
             }
 
@@ -31,23 +25,11 @@ function start() {
                 case "Add Employee":
                     addEmployee();
                     break;
-                case "Delete Employee":
-                    deleteEmployee();
-                    break;
-                case "Update Employee":
-                    updateEmployee();
-                    break;
                 case "View Roles":
                     viewRoles();
                     break;
                 case "Add Role":
                     addRole();
-                    break;
-                case "Delete Role":
-                    deleteRole();
-                    break;
-                case "Update Role":
-                    updateRole();
                     break;
                 case "View Departments":
                     viewDepartments();
@@ -55,24 +37,12 @@ function start() {
                 case "Add Department":
                     addDepartment();
                     break;
-                case "Delete Department":
-                    deleteDepartment();
-                    break;
-                case "Update Department":
-                    updateDepartment();
-                    break;
                 case "Update Employee Roles":
                     updateEmployeeRoles();
                     break;
-                case "Update Employee Manager":
-                    updateEmployeeManager();
-                    break;
-                case "View Employees by Department":
-                    viewEmpByDept();
-                    break;
-                case "View Employees By Manager":
-                    viewEmpByManager();
-                    break;
+                // case "View Employees By Manager":
+                //     viewEmpByManager();
+                //     break;
             }
 
         })
@@ -215,21 +185,6 @@ function addDepartment() {
             })
         })
 }
-// delete
-// function deleteEmployee() {
-
-// }
-// function deleteRole() {
-
-// }
-// function deleteDepartment() {
-
-// }
-
-// update
-// function updateEmployee() {
-
-// }
 
 function updateEmployeeRoles() {
     db.promise().query("SELECT * FROM employee").then(([data]) => {
@@ -276,34 +231,26 @@ function updateEmployeeRoles() {
     })
 }
 
-// function updateEmployeeManager() {
 
+// function viewEmpByDept() {
+//     db.promise().query("SELECT * FROM department").then(([data]) => {
+//         const allDepts = data.map(({ id, name }) => ({
+//             name: name,
+//             value: id
+//         }))
+//         inquirer
+//             .prompt([
+//                 {
+//                     type: "list",
+//                     name: "viewDepts",
+//                     message: "Which department's employees would you like to view?",
+//                     choices: allDepts
+//                 }
+//             ]).then(([data]) => {
+//                 console.table(data);
+//             })
+//     })
 // }
 
-// view by
-
-function viewEmpByDept() {
-    db.promise().query("SELECT * FROM department").then(([data]) => {
-        const allDepts = data.map(({ id, name }) => ({
-            name: name,
-            value: id
-        }))
-        inquirer
-            .prompt([
-                {
-                    type: "list",
-                    name: "viewDepts",
-                    message: "Which department's employees would you like to view?",
-                    choices: allDepts
-                }
-            ]).then(([data]) => {
-                console.table(data);
-            })
-    })
-}
-
-// function viewEmpByManager() {
-
-// }
 
 
