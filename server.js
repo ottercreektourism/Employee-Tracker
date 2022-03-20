@@ -81,16 +81,16 @@ function start() {
 start();
 
 // View
-//  LEFT JOIN employee ON manager_id = id
 function viewEmployees() {
-    db.promise().query("SELECT first_name, last_name, title, salary, name AS department FROM employee LEFT JOIN role ON employee.role_id = role.id LEFT JOIN department ON role.department_id = department.id").then(([data]) => {
+    db.promise().query("SELECT employee.id, employee.first_name, employee.last_name, title, salary, name AS department, employee.manager_id AS manager_id, manager.first_name AS manager_first_name, manager.last_name AS manager_last_name FROM employee LEFT JOIN employee manager ON employee.manager_id = manager.id LEFT JOIN ROLE ON employee.role_id = role.id LEFT JOIN department ON role.department_id = department.id").then(([data]) => {
+        console.log("\n");
         console.table(data);
         start();
     })
 }
 
 function viewRoles() {
-    db.promise().query("SELECT * FROM role").then(([data]) => {
+    db.promise().query("SELECT role.id, role.title, role.salary, role.department_id, department.name AS department FROM role LEFT JOIN department ON department.id = role.department_id").then(([data]) => {
         console.table(data);
         start();
     })
@@ -239,14 +239,37 @@ function updateEmployeeRoles() {
             .prompt([
                 {
                     type: "list",
-                    name: "first_name",
+                    name: "id",
                     message: "Select an employee to update their role:",
                     choices: allEmployees
                 }
             ]).then(res => {
-                first = res.first_name;
-                
-                db.promise().query("UPDATE employee SET role_id = ")
+                employeeID = res.id;
+                db.promise().query("SELECT * FROM role").then(([data]) => {
+                    const allRoles = data.map(({ id, title }) => ({
+                        name: title,
+                        value: id
+                    }))
+                    inquirer
+                        .prompt([
+                            {
+                                type: "list",
+                                name: "role_id",
+                                message: "Select a new role:",
+                                choices: allRoles
+                            }
+                        ]).then(res => {
+                            title = res.role_id;
+                            console.log(allEmployees);
+                            console.log(allRoles);
+                            console.log(title);
+                            console.log(employeeID);
+                            db.promise().query(`UPDATE employee SET role_id = ${title} WHERE id = ${employeeID}`)
+                            viewEmployees();
+                            start();
+                        })
+
+                })
             })
     })
 }
@@ -277,8 +300,8 @@ function viewEmpByDept() {
     })
 }
 
-function viewEmpByManager() {
+// function viewEmpByManager() {
 
-}
+// }
 
 
