@@ -82,7 +82,7 @@ start();
 
 // View
 function viewEmployees() {
-    db.promise().query("SELECT employee.id, employee.first_name, employee.last_name, title, salary, name AS department, employee.manager_id AS manager_id, manager.first_name AS manager_first_name, manager.last_name AS manager_last_name FROM employee LEFT JOIN employee manager ON employee.manager_id = manager.id LEFT JOIN ROLE ON employee.role_id = role.id LEFT JOIN department ON role.department_id = department.id").then(([data]) => {
+    db.promise().query("SELECT employee.id, employee.first_name, employee.last_name, title, salary, name AS department, manager.first_name AS manager_first_name, manager.last_name AS manager_last_name FROM employee LEFT JOIN employee manager ON employee.manager_id = manager.id LEFT JOIN ROLE ON employee.role_id = role.id LEFT JOIN department ON role.department_id = department.id").then(([data]) => {
         console.log("\n");
         console.table(data);
         start();
@@ -91,6 +91,7 @@ function viewEmployees() {
 
 function viewRoles() {
     db.promise().query("SELECT role.id, role.title, role.salary, role.department_id, department.name AS department FROM role LEFT JOIN department ON department.id = role.department_id").then(([data]) => {
+        console.log("\n");
         console.table(data);
         start();
     })
@@ -99,6 +100,7 @@ function viewRoles() {
 
 function viewDepartments() {
     db.promise().query("SELECT * FROM department").then(([data]) => {
+        console.log("\n");
         console.table(data);
         start();
     })
