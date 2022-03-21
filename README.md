@@ -42,9 +42,9 @@ Pull requests are welcome. For any major changes, please open an issue first to 
 To source sql, type in terminal:
 > mysql -u root
 
-> SOURCE schema.sql;
+> SOURCE db/schema.sql;
 
-> SOURCE seeds.sql;
+> SOURCE db/seeds.sql;
 
 To exit mysql terminal and go back to bash, type:
 > quit
