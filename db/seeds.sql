@@ -29,5 +29,5 @@ VALUES
     ('Sigmund', 'Heftiche', 4, 3),
     ('Corinna', 'Campbell', 5, NULL),
     ('Misha', 'Xi', 6, 5),
-    ('Fransisco', 'Chekrad', 7, NULL),
+    ('Francisco', 'Chekrad', 7, NULL),
     ('Firenze', 'Visintini', 8, 7);
